@@ -1,0 +1,26 @@
+# VSLAM-LAB capability environment for Mask2Former (static/dynamic masks). VSLAM-LAB clones this repo to
+# Capabilities/sources/mask2former; its `mask2former` tasks forward here, and its Capabilities/mask2former.py
+# resolves dataset/sequence targets and runs `inference` with --sequence-path. Not published as a package.
+[workspace]
+authors = ["vslamlab <vslamlab@gmail.com>"]
+channels = ["https://prefix.dev/conda-forge"]
+name = "mask2former"
+platforms = [{ name = "linux-64-cuda129", platform = "linux-64", cuda = "12.9" }]
+version = "0.1.0"
+
+[tasks]
+install = "python vslamlab_mask2former.py --prefetch"  # checkpoint -> weights/
+inference = "python vslamlab_mask2former.py"
+test = "python -I -c 'from transformers import AutoImageProcessor, Mask2FormerForUniversalSegmentation; print(\"OK\")' && python vslamlab_mask2former.py --help > /dev/null && echo OK"
+
+[dependencies]
+python = "3.11.*"
+cuda-version = "12.9.*"  # same PyTorch build as the other CUDA 12.9 environments (shared pixi cache)
+pytorch-gpu = "2.7.*"
+torchvision = "*"
+transformers = "*"
+huggingface_hub = "*"
+scipy = "*"              # transformers' Mask2Former module imports scipy.optimize
+numpy = "<2"
+pillow = "*"
+tqdm = "*"
